@@ -5,7 +5,6 @@ on:
   workflow_dispatch:
 
 defaults:
-  runs-on: ubuntu-latest
   run:
     shell: bash
 
@@ -24,6 +23,7 @@ jobs:
 
   release-management:
     name: Release management
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.generate-version.outputs.version }}
     steps:
@@ -36,8 +36,8 @@ jobs:
     #uses: amsrun/template/.github/workflows/release-management.yml@main
 
   debug:
-    needs: [release-management, unit-test]
     name: Debug
+    needs: [release-management, unit-test]
     runs-on: ubuntu-latest
     steps:
       - name: Display Release Version
