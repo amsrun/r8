@@ -8,9 +8,10 @@ on:
         required: false
         type: string
         default: 'Testing environment variables'
+  push:
 
 jobs:
   call-reusable-workflow:
-    uses: amsrun/r0/.github/workflows/test-environments.yml@main
+    uses: amsrun/template/.github/workflows/test-environments.yml@develop
     with:
       message: ${{ inputs.custom_message }}
