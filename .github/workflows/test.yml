@@ -11,6 +11,20 @@ on:
   push:
 
 jobs:
+  release-management:
+    name: Release management
+    uses: amsrun/template/.github/workflows/release-management.yml@main
+
+  debug:
+    needs: release-management
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Release Version
+        run: |
+          echo "Release version: ${{ needs.release-management.outputs.release-version }}"
+          echo "This version can be used for tagging, creating releases, etc."
+    
   call-reusable-workflow:
     name: Call reusable workflow
     uses: amsrun/template/.github/workflows/test-environments.yml@main
