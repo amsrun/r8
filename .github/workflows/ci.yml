@@ -4,6 +4,43 @@ on:
   push:
   workflow_dispatch:
 
+defaults:
+  runs-on: ubuntu-latest
+  run:
+    shell: bash
+
+
 jobs:
-  ci:
-    uses: amsrun/template/.github/workflows/ci.yml@main
+  unit-test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Run tests
+          run: |
+            echo "Running unit tests..."
+            # Add your test commands here, e.g., npm test, pytest, etc.
+
+  release-management:
+    name: Release management
+    outputs:
+      version: ${{ steps.generate-version.outputs.version }}
+    steps:
+      - name: Generate Release Version
+        id: generate-version
+        uses: amsrun/template/.github/actions/generate-version@main
+        with:
+          release: true
+
+    #uses: amsrun/template/.github/workflows/release-management.yml@main
+
+  debug:
+    needs: [release-management, unit-test]
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Release Version
+        run: |
+          echo "Release version: ${{ needs.release-management.outputs.version }}"
+          echo "This version can be used for tagging, creating releases, etc."
