@@ -36,7 +36,7 @@ jobs:
     #uses: amsrun/template/.github/workflows/release-management.yml@main
 
   deploy:
-    name: Debug
+    name: Deploy AWS infrastructure
     needs: [release-management, unit-test]
     runs-on: ubuntu-latest
     environment: production
@@ -48,7 +48,7 @@ jobs:
 
   
   post-release:
-    name: Debug
+    name: Post-release management
     needs: [release-management, deploy]
     runs-on: ubuntu-latest
     steps:
@@ -56,8 +56,10 @@ jobs:
         uses: amsrun/template/.github/actions/git-tag@main
         with:
           tag: ${{ needs.release-management.outputs.version }}
+      - name: Create release
+        run: |
+          echo "create release for ${{ needs.release-management.outputs.version }}"
 
-  
   debug:
     name: Debug
     needs: [release-management, unit-test]
