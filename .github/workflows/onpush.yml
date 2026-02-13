@@ -1,4 +1,4 @@
-name: Test Environment Variables
+name: Experiment
 
 on:
   push:
