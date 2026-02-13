@@ -35,6 +35,28 @@ jobs:
 
     #uses: amsrun/template/.github/workflows/release-management.yml@main
 
+  deploy:
+    name: Debug
+    needs: [release-management, unit-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Release Version
+        run: |
+          echo "Release version: ${{ needs.release-management.outputs.version }}"
+          echo "This version can be used for tagging, creating releases, etc."
+
+  
+  post-release:
+    name: Debug
+    needs: [release-management]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git tagging
+        uses: amsrun/template/.github/actions/git-tag@main
+        with:
+          tag: ${{ needs.release-management.outputs.version }}
+
+  
   debug:
     name: Debug
     needs: [release-management, unit-test]
