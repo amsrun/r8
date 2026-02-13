@@ -1,0 +1,15 @@
+name: Test Environment Variables
+
+on:
+  push:
+  
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git tagging
+        uses: amsrun/template/actions/git-tag@main
