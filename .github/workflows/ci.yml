@@ -1,0 +1,9 @@
+name: Continuous Integration
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: amsrun/template/.github/workflows/ci.yml@main
