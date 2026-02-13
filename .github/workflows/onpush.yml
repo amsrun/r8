@@ -2,6 +2,8 @@ name: Experiment
 
 on:
   push:
+
+permissions: write-all
   
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
