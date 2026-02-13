@@ -1,0 +1,16 @@
+name: Call Test Environments Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      custom_message:
+        description: 'Custom message to pass'
+        required: false
+        type: string
+        default: 'Testing environment variables'
+
+jobs:
+  call-reusable-workflow:
+    uses: amsrun/r0/.github/workflows/test-environments.yml@main
+    with:
+      message: ${{ inputs.custom_message }}
