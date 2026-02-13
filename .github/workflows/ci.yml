@@ -39,6 +39,7 @@ jobs:
     name: Debug
     needs: [release-management, unit-test]
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Display Release Version
         run: |
@@ -48,7 +49,7 @@ jobs:
   
   post-release:
     name: Debug
-    needs: [release-management]
+    needs: [release-management, deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Git tagging
