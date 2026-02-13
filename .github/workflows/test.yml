@@ -12,6 +12,6 @@ on:
 
 jobs:
   call-reusable-workflow:
-    uses: amsrun/template/.github/workflows/test-environments.yml@develop
+    uses: amsrun/template/.github/workflows/test-environments.yml@main
     with:
       message: ${{ inputs.custom_message }}
