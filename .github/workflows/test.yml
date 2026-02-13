@@ -26,6 +26,7 @@ jobs:
 
   stg:
     name: Deploy to Staging
+    needs: release-management
     environment: staging
     runs-on: ubuntu-latest
     steps:
