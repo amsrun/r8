@@ -58,8 +58,9 @@ jobs:
         with:
           tag: ${{ needs.release-management.outputs.version }}_REL
       - name: Create release
-        run: |
-          echo "create release for ${{ needs.release-management.outputs.version }}"
+        uses: amsrun/template/.github/actions/create-release@main
+        with:
+          tag: ${{ needs.release-management.outputs.version }}_REL
 
   debug:
     name: Debug
