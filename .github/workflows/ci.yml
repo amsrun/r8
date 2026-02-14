@@ -53,14 +53,10 @@ jobs:
     needs: [release-management, deploy]
     runs-on: ubuntu-latest
     steps:
-      - name: Git tagging
-        uses: amsrun/template/.github/actions/git-tag@main
-        with:
-          tag: ${{ needs.release-management.outputs.version }}_REL
       - name: Create release
         uses: amsrun/template/.github/actions/create-release@main
         with:
-          tag: ${{ needs.release-management.outputs.version }}_REL
+          tag: ${{ needs.release-management.outputs.version }}
 
   debug:
     name: Debug
