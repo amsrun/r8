@@ -12,7 +12,9 @@ on:
 jobs:
   release-management:
     name: Release management
-    uses: amsrun/template/.github/workflows/release-management.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 1
 
   call-workflow:
     name: Call reusable workflow
