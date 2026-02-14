@@ -89,7 +89,7 @@ jobs:
     name: Deploy AWS infrastructure
     needs: [release-management, unit-test, docker]
     runs-on: ubuntu-latest
-    # environment: production
+    environment: development
     steps:
       - name: Display Release Version
         run: |

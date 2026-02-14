@@ -19,6 +19,7 @@ jobs:
   call-workflow:
     name: Call reusable workflow
     needs: release-management
+    environment: staging
     uses: amsrun/template/.github/workflows/test.yml@main
     with:
       message: ${{ inputs.custom_message }}
@@ -40,5 +41,5 @@ jobs:
     steps:
       - name: Yay!
         run: pwd
-  
+
 
