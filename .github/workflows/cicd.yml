@@ -40,7 +40,7 @@ jobs:
     #uses: amsrun/template/.github/workflows/release-management.yml@main
 
   docker:
-    name: Build and Push Docker Image
+    name: Build Docker Image
     needs: [release-management]
     runs-on: ubuntu-latest
     environment: development
