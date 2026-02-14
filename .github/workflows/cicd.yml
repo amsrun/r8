@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI/CD
 
 on:
   # push:
@@ -11,7 +11,7 @@ defaults:
 permissions: write-all
 
 env:
-  ECR_REPOSITORY: data-plaform/ml/ad
+  ECR_REPOSITORY: data-platform/ml/ad
 
 jobs:
   unit-test:
@@ -33,56 +33,61 @@ jobs:
     steps:
       - name: Generate Release Version
         id: generate-version
-        uses: amsrun/template/.github/actions/generate-version@main
-        # with:
-        #   release: true
+        uses: amsrun/template/actions/generate-version@main
 
-    #uses: amsrun/template/.github/workflows/release-management.yml@main
 
+  # Build docker image here. The build step is project dependent.
   docker:
-    name: Build Docker Image
-    needs: [release-management]
+    name: Build and Push Docker Image
+    needs: [release-management, unit-test]
     runs-on: ubuntu-latest
+    environment: development
     outputs:
       image_tag: ${{ steps.build-image.outputs.image_tag }}
-    defaults:
-      run:
-        shell: bash
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: "us-east-2"
+    # env:
+    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #   AWS_REGION: "us-east-2"
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      # For Pointing to dev account otherwise ECR login defaults to Infra account
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.AWS_DEPLOYMENT_ROLE }}
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Build and export
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     tags: ${{ vars.ECR_REPOSITORY }}:latest
+      #     outputs: type=docker,dest=${{ runner.temp }}/myimage.tar
+
+      # For Pointing to dev account otherwise ECR login defaults to Infra account
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ${{ vars.AWS_REGION }}
+      #     role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/${{ vars.AWS_DEPLOYMENT_ROLE }}
+
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, test, tag, and push service image to Amazon ECR
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          ECR_REGISTRY: "${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com"
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           IMAGE_TAG: "ci-${{ github.sha }}"
         run: |
           docker build -f ./Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          # docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image_tag=$(echo $IMAGE_TAG)" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy AWS infrastructure
-    needs: [release-management, unit-test]
+    needs: [release-management, unit-test, docker]
     runs-on: ubuntu-latest
     # environment: production
     steps:
@@ -98,17 +103,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Git tagging w/ release
-        uses: amsrun/template/.github/actions/create-release@main
+        uses: amsrun/template/actions/create-release@main
         with:
           tag: ${{ needs.release-management.outputs.version }}
           release: true
 
-  debug:
-    name: Debug
-    needs: [release-management, unit-test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Display Release Version
-        run: |
-          echo "Release version: ${{ needs.release-management.outputs.version }}"
-          echo "This version can be used for tagging, creating releases, etc."
+  # debug:
+  #   name: Debug
+  #   needs: [release-management, unit-test]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Display Release Version
+  #       run: |
+  #         echo "Release version: ${{ needs.release-management.outputs.version }}"
+  #         echo "This version can be used for tagging, creating releases, etc."
