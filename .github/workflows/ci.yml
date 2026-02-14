@@ -40,7 +40,7 @@ jobs:
     name: Deploy AWS infrastructure
     needs: [release-management, unit-test]
     runs-on: ubuntu-latest
-    environment: production
+    # environment: production
     steps:
       - name: Display Release Version
         run: |
