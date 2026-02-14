@@ -28,7 +28,6 @@ jobs:
     steps:
       - name: Display Release Version
         run: |
-          echo "Release version: ${{ needs.release-management.outputs.release-version }}"
           echo "This version can be used for tagging, creating releases, etc."
 
   stg:
