@@ -14,6 +14,13 @@ jobs:
     name: Release management
     uses: amsrun/template/.github/workflows/release-management.yml@main
 
+  call-workflow:
+    name: Call reusable workflow
+    needs: release-management
+    uses: amsrun/template/.github/workflows/test.yml@main
+    with:
+      message: ${{ inputs.custom_message }}
+
   debug:
     needs: release-management
     name: Debug
@@ -26,16 +33,11 @@ jobs:
 
   stg:
     name: Deploy to Staging
-    needs: release-management
+    needs: call-workflow
     environment: staging
     runs-on: ubuntu-latest
     steps:
       - name: Yay!
         run: pwd
   
-  call-reusable-workflow:
-    name: Call reusable workflow
-    uses: amsrun/template/.github/workflows/test-environments.yml@main
-    with:
-      environment: staging
-      message: ${{ inputs.custom_message }}
+
