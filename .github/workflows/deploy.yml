@@ -24,17 +24,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # - name: Mock deployment step
-      #   run: aws sts get-caller-identity --output json
-      # - name: Deploy infrastructure with Terraform
-      #   uses: your-org/your-terraform-composite-action@your-ref
-      #   with:
-      #     environment: ${{ inputs.target_environment }}
-      #     aws_region: ${{ inputs.aws_region }}
-      #     terraform_directory: ${{ inputs.terraform_directory }}
+      - name: Mock deployment step
+        if: false() # Set to true to enable actual deployment
+        run: aws sts get-caller-identity --output json
+      - name: Deploy infrastructure with Terraform
+        if: false()
+        uses: your-org/your-terraform-composite-action@your-ref
+        with:
+          environment: ${{ inputs.target_environment }}
+          aws_region: ${{ inputs.aws_region }}
+          terraform_directory: ${{ inputs.terraform_directory }}
 
   update-ecr-image-tags:
-    name: Update ECR image tags
+    name: ECR image tags
     runs-on: ubuntu-latest
     needs: deploy-infrastructure
     environment: ${{ inputs.environment }}
