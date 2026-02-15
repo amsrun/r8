@@ -12,8 +12,7 @@ on:
         required: false
         type: string
         default: "infrastructure"
-    secrets:
-      inherit: true
+    secrets: inherit
       # AWS_ACCESS_KEY_ID:
       #   description: AWS access key ID with permissions to deploy infrastructure and applications
       # AWS_SECRET_ACCESS_KEY:
