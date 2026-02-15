@@ -91,6 +91,8 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       environment: development
+    secrets:
+      inherit: true
 
 
 
@@ -100,6 +102,8 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       environment: staging
+    secrets:
+      inherit: true
   # deploy:
   #   name: Deploy AWS infrastructure
   #   needs: [release-management, unit-test, docker]

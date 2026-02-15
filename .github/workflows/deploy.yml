@@ -12,6 +12,8 @@ on:
         required: false
         type: string
         default: "infrastructure"
+    secrets:
+      inherit: true
 
 permissions:
   contents: read
@@ -28,7 +30,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Mock deployment step
-        if: ${{ false }}
         run: aws sts get-caller-identity --output json
       # - name: Deploy infrastructure with Terraform
       #   if: ${{ false }}
