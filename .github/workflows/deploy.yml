@@ -25,10 +25,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Mock deployment step
-        if: false()
+        if: ${{ false }}
         run: aws sts get-caller-identity --output json
       - name: Deploy infrastructure with Terraform
-        if: false()
+        if: ${{ false }}
         uses: your-org/your-terraform-composite-action@your-ref
         with:
           environment: ${{ inputs.target_environment }}
