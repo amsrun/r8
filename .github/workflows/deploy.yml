@@ -12,14 +12,15 @@ on:
         required: false
         type: string
         default: "infrastructure"
-    secrets: inherit
-      # AWS_ACCESS_KEY_ID:
-      #   description: AWS access key ID with permissions to deploy infrastructure and applications
-      # AWS_SECRET_ACCESS_KEY:
-      #   description: AWS secret access key with permissions to deploy infrastructure and applications
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        description: AWS access key ID with permissions to deploy infrastructure and applications
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: AWS secret access key with permissions to deploy infrastructure and applications
+        required: true
 
-permissions:
-  contents: read
+permissions: write-all
 
 
 # Due to the approval configured at the environment level, tasks that cannot run in parallel will need to be grouped into a single job.
