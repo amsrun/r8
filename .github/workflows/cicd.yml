@@ -102,6 +102,16 @@ jobs:
     with:
       environment: staging
     secrets: inherit
+
+
+  deploy-production:
+    name: 'Deploy: Production'
+    needs: [deploy-staging]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: production
+    secrets: inherit
+
   # deploy:
   #   name: Deploy AWS infrastructure
   #   needs: [release-management, unit-test, docker]
@@ -116,7 +126,7 @@ jobs:
 
   post-release:
     name: Post-release management
-    needs: [release-management, deploy-staging]
+    needs: [release-management, deploy-production]
     runs-on: ubuntu-latest
     steps:
       - name: Git tagging w/ release
