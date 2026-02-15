@@ -15,7 +15,7 @@ env:
 
 jobs:
   unit-test:
-    name: Run unit tests
+    name: Unit Tests
     runs-on: ubuntu-latest
     steps:
         - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
             # Add your test commands here, e.g., npm test, pytest, etc.
 
   release-management:
-    name: Release management
+    name: Release Management
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.generate-version.outputs.version }}
@@ -38,7 +38,7 @@ jobs:
 
   # Build docker image here. The build step is project dependent.
   docker:
-    name: Build and Push Docker Image
+    name: Docker
     needs: [release-management, unit-test]
     runs-on: ubuntu-latest
     environment: development
@@ -86,7 +86,7 @@ jobs:
           echo "image_tag=$(echo $IMAGE_TAG)" >> $GITHUB_OUTPUT
 
   deploy-development:
-    name: Deploy to development
+    name: 'Deploy: Development'
     needs: [release-management, unit-test, docker]
     uses: ./.github/workflows/deploy.yml
     with:
@@ -95,7 +95,7 @@ jobs:
 
 
   deploy-staging:
-    name: Deploy to staging
+    name: 'Deploy: Staging'
     needs: [deploy-development]
     uses: ./.github/workflows/deploy.yml
     with:

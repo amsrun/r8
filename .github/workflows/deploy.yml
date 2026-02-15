@@ -16,9 +16,12 @@ on:
 permissions:
   contents: read
 
+
+# Due to the approval configured at the environment level, tasks that cannot run in parallel will need to be grouped into a single job.
+
 jobs:
-  deploy-aws:
-    name: AWS infrastructure
+  aws:
+    name: AWS
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -35,7 +38,7 @@ jobs:
       #     aws_region: ${{ inputs.aws_region }}
       #     terraform_directory: ${{ inputs.terraform_directory }}
 
-  update-ecr-image-tags:
+  ecr-tags:
     name: ECR image tags
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
