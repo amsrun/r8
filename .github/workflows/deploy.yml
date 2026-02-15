@@ -1,0 +1,60 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Deployment environment to target
+        required: true
+        type: string
+      terraform_directory:
+        description: Terraform working directory
+        required: true
+        type: string
+        default: infrastructure
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy AWS infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # - name: Mock deployment step
+      #   run: aws sts get-caller-identity --output json
+      # - name: Deploy infrastructure with Terraform
+      #   uses: your-org/your-terraform-composite-action@your-ref
+      #   with:
+      #     environment: ${{ inputs.target_environment }}
+      #     aws_region: ${{ inputs.aws_region }}
+      #     terraform_directory: ${{ inputs.terraform_directory }}
+
+  update-ecr-image-tags:
+    name: Update ECR image tags
+    runs-on: ubuntu-latest
+    needs: deploy-infrastructure
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update tags on existing ECR image
+        uses: amsrun/template/actions/ecr-tag@main
+        with:
+          repository: ${{ vars.ECR_REPOSITORY }}
+          source-tag: ${{ github.sha }}
+          tags: ${{ inputs.environment }}
+
+  additional-deployment-tasks:
+    name: Additional deployment tasks (placeholder)
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-infrastructure
+      - update-ecr-image-tags
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Placeholder
+        run: echo "Add additional deployment tasks here"

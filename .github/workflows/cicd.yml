@@ -89,12 +89,19 @@ jobs:
     name: Deploy AWS infrastructure
     needs: [release-management, unit-test, docker]
     runs-on: ubuntu-latest
-    environment: development
-    steps:
-      - name: Display Release Version
-        run: |
-          echo "Release version: ${{ needs.release-management.outputs.version }}"
-          echo "This version can be used for tagging, creating releases, etc."
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: development
+  # deploy:
+  #   name: Deploy AWS infrastructure
+  #   needs: [release-management, unit-test, docker]
+  #   runs-on: ubuntu-latest
+  #   environment: development
+  #   steps:
+  #     - name: Display Release Version
+  #       run: |
+  #         echo "Release version: ${{ needs.release-management.outputs.version }}"
+  #         echo "This version can be used for tagging, creating releases, etc."
 
 
   post-release:
