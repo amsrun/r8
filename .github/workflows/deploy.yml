@@ -11,14 +11,14 @@ on:
         description: Terraform working directory
         required: true
         type: string
-        default: infrastructure
+        default: "infrastructure"
 
 permissions:
   contents: read
 
 jobs:
   deploy-infrastructure:
-    name: Deploy AWS infrastructure
+    name: AWS infrastructure
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
